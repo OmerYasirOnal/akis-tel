@@ -1,0 +1,29 @@
+---
+description: "AKISTEL - global çalışma kuralları"
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# AKISTEL (AKIS yan ürünü) - Kurallar
+
+## Çalışma şekli
+- Her görev küçük PR olarak uygulanacak.
+- Kod yazmadan önce: Problem → Çözüm → Kabul Kriterleri → Test Planı yaz.
+- Değişiklikleri minimal tut, gereksiz yeniden yazım yapma.
+- Güvenlik kritik: kriptoyu sıfırdan yazma, kanıtlanmış protokollere uy.
+
+## Stil ve kalite
+- TypeScript varsa strict; backend Go/TS seçimine göre idiomatik yaz.
+- Fonksiyonlar küçük; erken return; açık isimlendirme.
+- Loglarda PII/mesaj içeriği asla yok.
+- Hata mesajları kullanıcıya güvenli, geliştiriciye ölçülebilir.
+
+## DoD (Definition of Done)
+- Unit test + (gerekirse) integration test
+- Lint/format temiz
+- README / docs güncel
+- Threat model etkisi not edildi
+
+## Dil
+- Kod ve commit mesajları İngilizce
+- Dokümantasyon Türkçe veya İngilizce (tutarlı ol)

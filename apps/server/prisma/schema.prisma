@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Cihaz kaydı - her cihazın kendine ait anahtarları var
+model Device {
+  id              String   @id @default(cuid())
+  userId          String   @map("user_id") // Kullanıcı tanımlayıcı (telefon hash vb.)
+  publicKey       String   @map("public_key") // Ed25519 public key (base64)
+  createdAt       DateTime @default(now()) @map("created_at")
+  lastSeenAt      DateTime @default(now()) @map("last_seen_at")
+
+  // Relations
+  keyBundle       KeyBundle?
+  sentMessages    Envelope[] @relation("SentMessages")
+  receivedMessages Envelope[] @relation("ReceivedMessages")
+
+  @@unique([userId, publicKey])
+  @@map("devices")
+}
+
+// Anahtar paketi - X3DH benzeri key exchange için
+model KeyBundle {
+  id              String   @id @default(cuid())
+  deviceId        String   @unique @map("device_id")
+  identityKey     String   @map("identity_key")      // Uzun ömürlü identity key
+  signedPreKey    String   @map("signed_pre_key")    // İmzalı pre-key
+  signature       String                              // Pre-key imzası
+  oneTimePreKeys  String[] @map("one_time_pre_keys") // Tek kullanımlık pre-keys
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  device          Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@map("key_bundles")
+}
+
+// Şifreli mesaj zarfı - sunucu içeriği görmez
+model Envelope {
+  id              String   @id @default(cuid())
+  senderId        String   @map("sender_id")
+  recipientId     String   @map("recipient_id")
+  ciphertext      String   // Şifreli mesaj (base64)
+  nonce           String   // Şifreleme nonce'u (base64)
+  ephemeralKey    String?  @map("ephemeral_key") // İlk mesajda ephemeral public key
+  createdAt       DateTime @default(now()) @map("created_at")
+  deliveredAt     DateTime? @map("delivered_at")
+
+  sender          Device   @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  recipient       Device   @relation("ReceivedMessages", fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@index([recipientId, deliveredAt])
+  @@map("envelopes")
+}

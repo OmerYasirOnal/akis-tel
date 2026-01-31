@@ -1,0 +1,34 @@
+---
+description: "Güvenlik: E2EE, key management, metadata minimizasyonu"
+globs: ["apps/**", "packages/**"]
+---
+
+# Güvenlik kuralları
+
+## Kripto yaklaşımı
+- Signal yaklaşımına benzer: X3DH + Double Ratchet mantığı.
+- Anahtarlar cihazda tutulur; sunucu yalnızca public bundle ve şifreli envelope görür.
+- **Sıfırdan kripto yazma** - denetlenmiş kütüphaneler kullan (libsignal vb.)
+
+## Key lifecycle
+- **Device keypair**: install-time üret, secure enclave'de sakla
+- **Pre-keys**: server'a publish (public), private cihazda
+- **Rotation**: per policy (signed pre-key ~monthly, one-time pre-keys refresh)
+- **Backup**: sadece kullanıcı parolasıyla türetilen key ile şifreli
+
+## Metadata minimizasyonu
+- Minimum: sender_device_id, recipient_device_id, timestamp (coarse), envelope_size bucket
+- IP/UA loglama minimal ve kısa TTL (7 gün max)
+- Analitik varsa privacy-by-design
+
+## Güvenlik testleri
+- Replay attack denemeleri
+- Tamper detection
+- Downgrade attack koruması
+- Rate limit + abuse controls
+
+## Güvenlik prensipleri
+- Defense in depth
+- Fail secure (hata durumunda güvenli taraf)
+- Least privilege
+- Zero trust (sunucu dahil)

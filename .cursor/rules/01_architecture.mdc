@@ -1,0 +1,40 @@
+---
+description: "Mimari: relay sunucu + E2EE istemci"
+globs: ["apps/**", "packages/**", "infra/**", "README.md"]
+---
+
+# Mimari kararlar (v0)
+
+## Bileşenler
+- **Mobile Client** (iOS/Android): E2EE, cihaz anahtarları, mesaj UI
+- **Relay Server**: auth, device registry, inbox queue, push tetikleme
+- **Storage**: sadece şifreli envelope + minimal metadata
+- **Optional**: media upload (ayrı servis, şifreli obje)
+
+## İlk MVP
+1. 1-1 chat
+2. device registration + key bundle publish
+3. offline mesaj teslimi
+4. basic push
+5. mesaj silme (local), sonra ephemeral
+
+## Asla yapma
+- Sunucuda mesaj içeriğini çözme
+- Sunucuda mesaj içeriğini indexleme
+- "AI için plaintext gönderme"
+
+## Monorepo Yapısı
+
+```
+akis-tel/
+├── apps/
+│   ├── server/     # Relay server
+│   └── mobile/     # iOS/Android client
+├── packages/
+│   ├── proto/      # MCP protocol definitions
+│   └── shared/     # Shared types & utilities
+├── infra/          # Deployment configs
+├── docker/         # Dockerfiles
+├── config/         # Environment configs
+└── scripts/        # Automation scripts
+```

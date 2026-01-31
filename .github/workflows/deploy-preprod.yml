@@ -1,0 +1,29 @@
+name: Deploy Preprod
+
+on:
+  push:
+    branches: ["release/**"]
+
+jobs:
+  deploy:
+    name: Deploy to Preprod
+    runs-on: ubuntu-latest
+    environment: preprod
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build
+        run: echo "TODO - Build for preprod"
+      
+      - name: Push to Registry
+        run: echo "TODO - Push docker image to registry"
+      
+      - name: Deploy
+        run: echo "TODO - Deploy to preprod environment"
+      
+      - name: Health Check
+        run: echo "TODO - Verify deployment health"
+      
+      - name: Run E2E Tests
+        run: echo "TODO - Run E2E tests against preprod"

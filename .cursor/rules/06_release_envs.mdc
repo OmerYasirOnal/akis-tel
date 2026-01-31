@@ -1,0 +1,45 @@
+---
+description: "Ortamlar ve release akışı"
+globs: ["infra/**", ".github/workflows/**", "config/**"]
+---
+
+# Environments & Release
+
+## Ortamlar
+
+| Ortam | Amaç | Branch/Tag |
+|-------|------|------------|
+| dev | Local development | - |
+| test | CI tests | - |
+| staging | QA, demo | `staging` branch |
+| preprod | Prod mirror | `release/*` branch |
+| prod | Production | `main` + `vX.Y.Z` tag |
+
+## Branch stratejisi
+
+```
+feature/* ──► develop ──► staging ──► release/* ──► main
+                │                         │           │
+                ▼                         ▼           ▼
+              dev/test               preprod        prod
+```
+
+## Release akışı
+
+1. Feature branch'ler `develop`'a merge
+2. `develop` → `staging` (QA testi)
+3. `staging` → `release/vX.Y.Z` (preprod test)
+4. Release onaylandıktan sonra `main`'e merge + tag
+
+## Version format
+- Semantic versioning: `vMAJOR.MINOR.PATCH`
+- Breaking changes: MAJOR++
+- New features: MINOR++
+- Bug fixes: PATCH++
+
+## Deployment checklist
+- [ ] All tests pass
+- [ ] Security scan clean
+- [ ] Database migrations tested
+- [ ] Rollback plan documented
+- [ ] Monitoring alerts configured

@@ -1,0 +1,32 @@
+name: Deploy Staging
+
+on:
+  push:
+    branches: ["staging"]
+
+jobs:
+  deploy:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    environment: staging
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build
+        run: echo "TODO - Build for staging"
+      
+      - name: Push to Registry
+        run: echo "TODO - Push docker image to registry"
+        # env:
+        #   REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
+        #   REGISTRY_PASS: ${{ secrets.REGISTRY_PASS }}
+      
+      - name: Deploy
+        run: echo "TODO - Deploy to staging environment"
+        # env:
+        #   DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        #   DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      
+      - name: Health Check
+        run: echo "TODO - Verify deployment health"

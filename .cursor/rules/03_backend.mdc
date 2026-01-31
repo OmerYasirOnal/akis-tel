@@ -1,0 +1,40 @@
+---
+description: "Backend kuralları (relay server)"
+globs: ["apps/server/**", "infra/**"]
+---
+
+# Backend: Relay server
+
+## Temel prensip
+Sunucu "dumb relay" (telsiz) gibi çalışır - **içerik görmez**.
+
+## Sınırlar
+- Sunucu plaintext görmez
+- Sunucu sadece:
+  - auth (token verification)
+  - device registry (public keys)
+  - encrypted envelope store & deliver
+  - push trigger (content-blind)
+
+## API prensipleri
+- OpenAPI/typed routes
+- Idempotent endpoints (retry-safe)
+- 4xx/5xx hataları ölçülebilir, PII içermez
+- Rate limiting per device/IP
+- Request validation (size limits, format)
+
+## Storage
+- **devices**: device_id, user_id, public_identity_key, created_at
+- **key_bundles**: device_id, signed_prekey, one_time_prekeys[], updated_at
+- **envelopes**: id, sender_device_id, recipient_device_id, ciphertext, created_at, ttl
+
+## Database kuralları
+- Migrations versioned
+- Indexes for common queries
+- TTL cleanup job for expired envelopes
+- No plaintext message storage ever
+
+## Logging
+- Request tracing (correlation ID)
+- Error rates, latency metrics
+- **Asla**: mesaj içeriği, user PII, full headers

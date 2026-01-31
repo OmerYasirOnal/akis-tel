@@ -1,0 +1,37 @@
+name: Deploy Prod
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    environment: prod
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Validate Tag
+        run: |
+          echo "Deploying tag: ${{ github.ref_name }}"
+          if [[ ! "${{ github.ref_name }}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid tag format. Expected vX.Y.Z"
+            exit 1
+          fi
+      
+      - name: Build
+        run: echo "TODO - Build for production"
+      
+      - name: Push to Registry
+        run: echo "TODO - Push docker image to registry"
+      
+      - name: Deploy
+        run: echo "TODO - Deploy to production environment"
+      
+      - name: Health Check
+        run: echo "TODO - Verify deployment health"
+      
+      - name: Notify
+        run: echo "TODO - Send deployment notification"

@@ -1,0 +1,41 @@
+---
+description: "Mobil istemci kuralları"
+globs: ["apps/mobile/**"]
+---
+
+# Mobile Client
+
+## UX prensipleri
+- Sade: WhatsApp değil, 'AKIS yan ürünü' gibi minimal
+- Offline-first: local queue + background retry
+- Hızlı: UI her zaman responsive
+- Attachments: sonraki faz
+
+## Güvenlik
+- Local storage encrypted (OS keystore/secure enclave)
+- Keys never leave secure storage unencrypted
+- Clipboard policy (opsiyonel - configurable)
+- Screenshot policy (opsiyonel - configurable)
+- Biometric unlock (opsiyonel)
+
+## State management
+- Local-first: mesajlar önce local DB'ye
+- Sync: background push/pull
+- Conflict resolution: last-write-wins (with vector clocks if needed)
+
+## Crypto responsibilities
+- Generate device keypair on install
+- Implement X3DH key exchange
+- Implement Double Ratchet for message keys
+- Encrypt before send, decrypt after receive
+
+## Network
+- Certificate pinning
+- Retry with exponential backoff
+- Offline queue
+- WebSocket for realtime (optional, can start with polling)
+
+## Error handling
+- User-friendly messages (no technical details)
+- Detailed logging for debugging (no PII)
+- Crash reporting (privacy-aware)

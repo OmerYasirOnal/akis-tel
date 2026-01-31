@@ -1,0 +1,39 @@
+---
+description: "Test ve CI standardı"
+globs: [".github/workflows/**", "apps/**", "packages/**"]
+---
+
+# Test & CI
+
+## Test piramidi
+- **Unit tests**: her modül için zorunlu
+- **Integration tests**: kritik akışlar (auth, message flow)
+- **E2E tests**: staging/preprod'da (sonraki faz)
+
+## Coverage hedefleri
+- Crypto modülleri: %90+
+- API endpoints: %80+
+- UI: kritik akışlar
+
+## CI pipeline
+1. **Lint**: code style, formatting
+2. **Type check**: TypeScript/Go type safety
+3. **Unit tests**: fast, isolated
+4. **Integration tests**: with test DB
+5. **Build**: verify compilation
+6. **Security scan**: dependency vulnerabilities
+
+## PR kuralları
+- All checks pass
+- At least 1 review (security-critical: 2)
+- No secrets in code
+- README/docs updated if needed
+
+## Test ortamı
+- CI: GitHub Actions + postgres/redis services
+- Local: docker-compose up
+
+## Secrets yönetimi
+- GitHub Environments: staging, preprod, prod
+- Required reviewers for prod
+- Secret rotation policy
