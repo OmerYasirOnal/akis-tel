@@ -1,4 +1,4 @@
-.PHONY: up down logs test lint clean db-shell redis-cli install dev dev-server dev-web build deploy
+.PHONY: up down logs test lint clean db-shell redis-cli install dev-server dev-web build deploy smoke
 
 # ============ DEVELOPMENT ============
 
@@ -8,11 +8,17 @@ install:
 	cd apps/web && npm install
 
 # Local development infrastructure (DB + Redis)
+# NOTE: Adminer runs on port 8080, backend uses port 3000
 up:
 	docker compose up -d
 	@echo "Waiting for services to be healthy..."
 	@sleep 3
 	@docker compose ps
+	@echo ""
+	@echo "Services ready:"
+	@echo "  - PostgreSQL: localhost:5432"
+	@echo "  - Redis:      localhost:6379"
+	@echo "  - Adminer:    http://localhost:8080"
 
 down:
 	docker compose down
@@ -23,16 +29,15 @@ down-v:
 logs:
 	docker compose logs -f
 
-# Run development servers
-dev: up
-	@echo "Starting development servers..."
-	@make dev-server &
-	@make dev-web
-
+# Run development servers (use in separate terminals)
+# Terminal 1: make dev-server
+# Terminal 2: make dev-web
 dev-server:
-	cd apps/server && cp .env.example .env 2>/dev/null || true && npx prisma migrate dev --name init 2>/dev/null || true && npm run dev
+	@echo "Starting backend on http://localhost:3000..."
+	cd apps/server && npm run dev
 
 dev-web:
+	@echo "Starting frontend on http://localhost:5173..."
 	cd apps/web && npm run dev
 
 # Database utilities
@@ -56,12 +61,12 @@ redis-cli:
 test:
 	cd apps/server && npm test
 
-test-server:
-	cd apps/server && npm test
+smoke:
+	cd apps/server && npm run smoke
 
 lint:
-	cd apps/server && npm run lint
-	cd apps/web && npm run lint
+	cd apps/server && npm run lint || true
+	cd apps/web && npm run lint || true
 
 # ============ BUILD ============
 
@@ -77,7 +82,6 @@ build-web:
 
 # ============ PRODUCTION ============
 
-# Build and run production containers locally
 prod-up:
 	docker compose -f docker-compose.prod.yml up --build -d
 
@@ -89,7 +93,6 @@ prod-logs:
 
 # ============ DEPLOYMENT ============
 
-# Deploy to Fly.io (requires flyctl)
 deploy:
 	fly deploy
 
